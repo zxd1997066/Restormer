@@ -194,6 +194,19 @@ for file_ in tqdm(files):
                                 total_time += elapsed
                                 total_sample += 1
                                 batch_time_list.append((toc - tic) * 1000)
+                elif args.precision == "float16":
+                    with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
+                        for i in range(args.num_iter):
+                            tic = time.time()
+                            restored = model(input_)
+                            p.step()
+                            toc = time.time()
+                            elapsed = toc - tic
+                            print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
+                            if i >= args.num_warmup:
+                                total_time += elapsed
+                                total_sample += 1
+                                batch_time_list.append((toc - tic) * 1000)
                 else:
                     for i in range(args.num_iter):
                         tic = time.time()
@@ -209,6 +222,18 @@ for file_ in tqdm(files):
         else:
             if args.precision == "bfloat16":
                 with torch.cpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
+                    for i in range(args.num_iter):
+                        tic = time.time()
+                        restored = model(input_)
+                        toc = time.time()
+                        elapsed = toc - tic
+                        print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
+                        if i >= args.num_warmup:
+                            total_time += elapsed
+                            total_sample += 1
+                            batch_time_list.append((toc - tic) * 1000)
+            elif args.precision == "float16":
+                with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
                     for i in range(args.num_iter):
                         tic = time.time()
                         restored = model(input_)
