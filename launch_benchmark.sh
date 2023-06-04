@@ -12,7 +12,8 @@ function main {
     set_environment
 
     pip install matplotlib scikit-learn scikit-image opencv-python yacs joblib natsort h5py tqdm
-    pip install gdown addict future lmdb pyyaml requests scipy tb-nightly yapf lpips einops
+    pip install gdown addict future lmdb pyyaml requests scipy tb-nightly yapf einops
+    pip install lpips --no-deps
     
     python setup.py develop --no_cuda_ext
     # wget http://mlpc.intel.com/downloads/models/motion_deblurring.pth
