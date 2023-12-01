@@ -39,6 +39,10 @@ parser.add_argument('--channels_last', default=1, type=int, help='')
 parser.add_argument('--ipex', default=False, action='store_true', help='use or not')
 parser.add_argument('--jit', default=False, action='store_true', help='use or not')
 parser.add_argument('--profile', default=False, action='store_true', help='use or not')
+parser.add_argument("--compile", action='store_true', default=False,
+                    help="enable torch.compile")
+parser.add_argument("--backend", type=str, default='inductor',
+                    help="enable torch.compile backend")
 
 args = parser.parse_args()
 
@@ -143,6 +147,8 @@ for file_ in tqdm(files):
         model = model.to(memory_format=torch.channels_last)
         input_ = input_.contiguous(memory_format=torch.channels_last)
         print("Running NHWC ...")
+    if args.compile:
+        model = torch.compile(model, backend=args.backend, options={"freezing": True})
     if args.ipex:
         model.eval()
         import intel_extension_for_pytorch as ipex
