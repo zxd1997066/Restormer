@@ -188,7 +188,7 @@ for file_ in tqdm(files):
                 on_trace_ready=trace_handler,
             ) as p:
                 if args.precision == "bfloat16":
-                    with torch.cpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
+                    with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.bfloat16):
                         for i in range(args.num_iter):
                             tic = time.time()
                             restored = model(input_)
@@ -201,7 +201,7 @@ for file_ in tqdm(files):
                                 total_sample += 1
                                 batch_time_list.append((toc - tic) * 1000)
                 elif args.precision == "float16":
-                    with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
+                    with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.half):
                         for i in range(args.num_iter):
                             tic = time.time()
                             restored = model(input_)
@@ -227,7 +227,7 @@ for file_ in tqdm(files):
                             batch_time_list.append((toc - tic) * 1000)
         else:
             if args.precision == "bfloat16":
-                with torch.cpu.amp.autocast(enabled=True, dtype=torch.bfloat16):
+                with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.bfloat16):
                     for i in range(args.num_iter):
                         tic = time.time()
                         restored = model(input_)
@@ -239,7 +239,7 @@ for file_ in tqdm(files):
                             total_sample += 1
                             batch_time_list.append((toc - tic) * 1000)
             elif args.precision == "float16":
-                with torch.cpu.amp.autocast(enabled=True, dtype=torch.half):
+                with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.half):
                     for i in range(args.num_iter):
                         tic = time.time()
                         restored = model(input_)
