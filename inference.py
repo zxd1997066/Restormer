@@ -106,6 +106,7 @@ model = load_arch['Restormer'](**parameters)
 
 checkpoint = torch.load(weights)
 model.load_state_dict(checkpoint['params'])
+model = model.cuda() if torch.cuda.is_available() else model
 model.eval()
 
 img_multiple_of = 8
@@ -191,8 +192,10 @@ for file_ in tqdm(files):
                     with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.bfloat16):
                         for i in range(args.num_iter):
                             tic = time.time()
+                            input_ = input_.cuda() if torch.cuda.is_available() else input_
                             restored = model(input_)
                             p.step()
+                            input_ = input_.cpu()
                             toc = time.time()
                             elapsed = toc - tic
                             print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
@@ -204,8 +207,10 @@ for file_ in tqdm(files):
                     with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.half):
                         for i in range(args.num_iter):
                             tic = time.time()
+                            input_ = input_.cuda() if torch.cuda.is_available() else input_
                             restored = model(input_)
                             p.step()
+                            input_ = input_.cpu()
                             toc = time.time()
                             elapsed = toc - tic
                             print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
@@ -216,8 +221,10 @@ for file_ in tqdm(files):
                 else:
                     for i in range(args.num_iter):
                         tic = time.time()
+                        input_ = input_.cuda() if torch.cuda.is_available() else input_
                         restored = model(input_)
                         p.step()
+                        input_ = input_.cpu()
                         toc = time.time()
                         elapsed = toc - tic
                         print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
@@ -230,7 +237,9 @@ for file_ in tqdm(files):
                 with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.bfloat16):
                     for i in range(args.num_iter):
                         tic = time.time()
+                        input_ = input_.cuda() if torch.cuda.is_available() else input_
                         restored = model(input_)
+                        input_ = input_.cpu()
                         toc = time.time()
                         elapsed = toc - tic
                         print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
@@ -242,7 +251,9 @@ for file_ in tqdm(files):
                 with torch.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu", enabled=True, dtype=torch.half):
                     for i in range(args.num_iter):
                         tic = time.time()
+                        input_ = input_.cuda() if torch.cuda.is_available() else input_
                         restored = model(input_)
+                        input_ = input_.cpu()
                         toc = time.time()
                         elapsed = toc - tic
                         print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
@@ -253,7 +264,9 @@ for file_ in tqdm(files):
             else:
                 for i in range(args.num_iter):
                     tic = time.time()
+                    input_ = input_.cuda() if torch.cuda.is_available() else input_
                     restored = model(input_)
+                    input_ = input_.cpu()
                     toc = time.time()
                     elapsed = toc - tic
                     print("Iteration: {}, inference time: {} sec.".format(i, elapsed), flush=True)
