@@ -19,7 +19,7 @@ function main {
     # wget http://mlpc.intel.com/downloads/models/motion_deblurring.pth
     cp /home2/pytorch-broad-models/Restormer/motion_deblurring.pth Motion_Deblurring/pretrained_models/
     if [ "${device}" == "cuda" ];then
-        pip install opencv-python==4.8.0.74
+        pip install opencv-python==4.8.0.74 opencv-python-headless==4.8.0.74
     fi
 
     # if multiple use 'xxx,xxx,xxx'
