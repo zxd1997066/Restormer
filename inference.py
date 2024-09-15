@@ -43,6 +43,8 @@ parser.add_argument("--compile", action='store_true', default=False,
                     help="enable torch.compile")
 parser.add_argument("--backend", type=str, default='inductor',
                     help="enable torch.compile backend")
+parser.add_argument("--triton_cpu", action='store_true', default=False,
+                    help="enable triton_cpu")
 
 args = parser.parse_args()
 
@@ -143,7 +145,10 @@ for file_ in tqdm(files):
     padh = H-h if h%img_multiple_of!=0 else 0
     padw = W-w if w%img_multiple_of!=0 else 0
     input_ = F.pad(input_, (0,padw,0,padh), 'reflect')
-
+    if args.triton_cpu:
+        print("run with triton cpu backend")
+        import torch._inductor.config
+        torch._inductor.config.cpu_backend="triton"
     if args.channels_last:
         model = model.to(memory_format=torch.channels_last)
         input_ = input_.contiguous(memory_format=torch.channels_last)
